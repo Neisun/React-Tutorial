@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>渲染元素</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // 以时钟的demo看一下渲染一个元素
+        function tick() {
+            const element = (
+                <p>Time is {new Date().toLocaleTimeString()}</p>
+            );
+            ReactDOM.render(element,document.getElementById('root'))
+        }
+        setInterval(tick,1000);
+        // 这种方式每个一秒调用一个render函数，其实非常浪费性能。正常情况下应该调用一次render函数，其他的内容都在组件内完成
+    </script>
+</body>
+</html>

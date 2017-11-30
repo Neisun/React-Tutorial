@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>react.js-demo09</title>
+    <script src="../build/react.min.js"></script>
+    <script src="../build/react-dom.min.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <script type="text/babel">
+        // 用react处理表单，实现数据绑定
+        var Input = React.createClass({
+            getInitialState:function () {
+                return {
+                    value:""
+                }
+            },
+            handleChange:function (e) {
+                this.setState({
+                    value:e.target.value
+                })
+            },
+            render:function () {
+                var inputValue = this.state.value;
+                return (
+                    <div>
+                        <input type="text" value={inputValue} onChange={this.handleChange} />
+                        <p>{inputValue}</p>
+                    </div>
+                );
+            }
+        })
+        ReactDOM.render(
+            <Input />,
+            document.body
+        )
+        
+    </script>
+</body>
+</html>

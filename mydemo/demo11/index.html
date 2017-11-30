@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>react.js-demo11</title>
+    <script src="../build/react.min.js"></script>
+    <script src="../build/react-dom.min.js"></script>
+    <script src="../build/browser.min.js"></script>
+    <script src="../build/jquery.min.js"></script>
+</head>
+<body>
+    <script type="text/babel">
+        // 这个demo是说ajax请求的
+        // 我们选择在组件加载的生命周期获取数据
+        var DataCom = React.createClass({
+            getInitialState:function () {
+                return {
+                    username:'',
+                    lastGistUrl:'',
+                }
+            },
+            render:function () {
+                return (
+                    <div>
+                        {this.state.username} gist is 
+                        <a href={this.state.lastGistUrl}>here</a>    
+                    </div>
+                )
+            },
+            componentDidMount:function () {
+                $.ajax({
+                    url:this.props.url,
+                    type:'GET',
+                }).then((res) => {
+                    var lastGist = res[0];
+                    if (this.isMounted) {
+                        this.setState({
+                            username:lastGist.owner.login,
+                            lastGistUrl:lastGist.html_url
+                        })
+                    }
+                })
+            }
+        })
+        ReactDOM.render(<DataCom url="https://api.github.com/users/octocat/gists" />,document.body)
+    </script>
+</body>
+</html>

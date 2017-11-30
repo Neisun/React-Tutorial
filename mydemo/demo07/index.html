@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>react.js-demo07</title>
+    <script src="../build/react.min.js"></script>
+    <script src="../build/react-dom.min.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <!-- 获取真实的DOM节点 -->
+    <script type="text/babel">
+    // 使用createClass方式创建的组件，并添加上事件，这种方式通过ref获取到节点
+    // 目前各种教程中使用createClass语法很少，都在向ES6 class语法靠拢
+        var MyFocus = React.createClass({
+            handleClick:function () {
+                this.refs.myText.focus();
+            },
+            render:function () {
+                return (
+                    <div>
+                        <input type="text" ref="myText" />
+                        <input type="button" onClick="handleClick" />
+                    </div>
+                )
+            }
+        })
+        ReactDOM.render(
+            <MyFocus/>,
+            document.body
+        )
+    </script>
+</body>
+</html>

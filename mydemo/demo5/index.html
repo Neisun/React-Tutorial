@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>react.js-demo05</title>
+    <script src="../build/react.min.js"></script>
+    <script src="../build/react-dom.min.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <script type="text/babel">
+        var NodeList = React.createClass({
+            render:function () {
+                return (
+                    <ol>
+                    {
+                        React.Children.map(this.props.children,(item) => {
+                            return <li>{item}</li>;
+                        })
+                    }
+                    </ol>
+                );
+            }
+        });
+        ReactDOM.render(
+            <NodeList>
+                <span>hello</span>
+                <span>world</span>
+            </NodeList>,
+            document.body
+        )
+    </script>
+</body>
+</html>

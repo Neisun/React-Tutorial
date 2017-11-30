@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>提取组件</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // 我们推荐更细致的划分组件，因为这样可以提高复用性
+        const comment = {
+            date: new Date(),
+            text: 'I hope you enjoy learning React!',
+            author: {
+              name: 'Hello Kitty',
+              avatarUrl: 'http://placekitten.com/g/64/64'
+            }
+          };
+        function Comment(props) {
+            return (
+                <div>
+                    <div>
+                        <img src={props.author.avatarUrl} alt={props.author.name} />
+                    </div>
+                    <div>
+                        <span>{props.author.name}</span>
+                    </div>
+                    <div>
+                        <span>{props.text}</span>
+                    </div>
+                    <div>
+                        <span>{formatDate(props.date)}</span>
+                    </div>
+                </div>
+            )
+        };
+        // 我们也应该把格式化时间的方法提取出来
+        function formatDate(date) {
+            return date.toLocaleDateString();
+        }
+        // 这样的组件，更棒，也可以复用
+        ReactDOM.render(
+            <Comment 
+                author={comment.author}
+                text={comment.text}
+                date={comment.date}
+            />,
+            document.getElementById('root')   
+        )
+    </script>
+</body>
+</html>

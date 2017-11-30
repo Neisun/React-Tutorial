@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>React.js-demo02</title>
+    <script src="../build/react.min.js"></script>
+    <script src="../build/react-dom.min.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="target"></div>
+    <script type="text/babel">
+        var names = [
+            {name:'王健林'},
+            {name:'马化腾'},
+            {name:'马云'},
+        ]
+        ReactDOM.render(
+            <ul>
+            {
+                names.map((item) => {
+                    return <li>Hello,{item.name}!</li>;
+                })
+            }
+            </ul>,
+            document.getElementById('target')
+        )
+    </script>
+</body>
+</html>

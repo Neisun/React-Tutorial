@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>介绍JSX语法</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // 在jsx中可以把标签和js写在一起
+        // 比如
+        const element1 = <h1>hello,world!</h1>;
+        // 如果有多个元素的嵌套，我们可以用()，包裹
+        const element2 = (
+            <div>
+                <p>this is a paragraph!</p>
+                <span>this is a span!</span>
+            </div>
+        )
+        // 可以把js表达式以{}形式嵌入到jsx中
+        // 比如函数，或者对象等等，举个栗子
+        function formatName(user) {
+            return user.firstName+' '+user.lastName;
+        }
+        const user = {
+            firstName:'David',
+            lastName:'Beckham'
+        }
+        const element3 = (
+            <div>
+                Hello,{formatName(user)}!
+            </div>
+        )
+        // jsx也是一个表达式，可以在任何js语句中使用
+        function getGreeting(user) {
+            if (user) {
+                return (
+                    <div>
+                        Hello,{formatName(user)}!
+                    </div>
+                )
+            }else {
+                return (
+                    <div>
+                        Hello,stranger!
+                    </div>
+                )
+            }
+        }
+        // 想指定属性，这很容易，用""包裹的就是字符串，不用字符串包裹，那就是变量，你需要定义好变量
+        var name = {
+            name:'Neisun'
+        }
+        const element4 = <div name="Neisun" user={name}></div>
+        // 甚至在render函数中，我们都可以直接传入getGreeting函数
+        ReactDOM.render(getGreeting(user),document.getElementById('root'))
+    </script>
+</body>
+</html>

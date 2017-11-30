@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>react.js-demo10</title>
+    <script src="../build/react.min.js"></script>
+    <script src="../build/react-dom.min.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <script type="text/babel">
+        // 组件的生命周期
+        var MyTitle = React.createClass({
+            getInitialState:function () {
+                return {
+                    opacity:1
+                }
+            },
+            change:function () {
+                var opacity = this.state.opacity;
+                opacity -= 0.05;
+                if (opacity<0) {
+                    opacity = 1;
+                }
+                this.setState({
+                    opacity:opacity
+                })
+            },
+            componentDidMount:function () {
+                // 使用setInterval注意this指向问题，这里由于是隐式绑定起作用了，所以没有问题
+                this.timer = setInterval(this.change,100);
+            },
+            render:function () {
+                return (
+                    <div style={{opacity:this.state.opacity,width:'100px',height:'100px',background:'red'}}></div>
+                )
+            }
+        })
+        ReactDOM.render(<MyTitle />,document.body)
+    </script>
+</body>
+</html>

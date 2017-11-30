@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件部分说明</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="target"></div>
+    <script type="text/babel">
+        // 组件说明
+        // 组件可以使用函数来创建，函数名字，需要大写，需要传递属性，就写形参
+        function Welcome(props) {
+            return <h1>Hello,{props.name}</h1>
+        }
+        // 或者换个形式
+        const element = <Welcome name="Neisun" />
+        ReactDOM.render(element,document.getElementById('root'))
+        // ReactDOM.render(<Welcome name="Neisun" />,document.getElementById('root'));
+
+        // 组件的嵌套，起个破名叫构成组件
+        function App() {
+            return (
+                <div>
+                    <Welcome name="David" />
+                    <Welcome name="John" />
+                    <Welcome name="Joe" />
+                </div>
+            )
+        }
+        ReactDOM.render(<App />,document.getElementById('target'));
+    </script>
+</body>
+</html>
