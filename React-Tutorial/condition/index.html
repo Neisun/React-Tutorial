@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>条件渲染部分</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // UserGreeting组件
+        function UserGreeting(props) {
+            return <h1>欢迎回来！</h1>
+        }
+        // GuestGreeting组件
+        function GuestGreeting(props) {
+            return <h1>请先登录！</h1>
+        }
+        // 根据用户是否登录来动态的变换这两个组件
+        function Greeting(props) {
+            let isLogin = props.isLogin;
+            if (isLogin) {
+                return <UserGreeting />;
+            }else {
+                return <GuestGreeting />;
+            }
+        }
+        // 在创建两个按钮，用来动态切换
+        function LoginButton(props) {
+            return (
+                <button onClick={props.onClick}>登录</button>
+            )
+        }
+        function LogoutButton(props) {
+            return (
+                <button onClick={props.onClick}>退出</button>
+            )
+        }
+        // 需要一个有状态的组件，渲染LoginButton或者LogoutButton，同时渲染Greeting组件
+        class LoginControl extends React.Component{
+            constructor(props) {
+                super(props);
+                this.state = {
+                    isLogin:false
+                }
+                this.handleLogin = this.handleLogin.bind(this)
+                this.handleLogout = this.handleLogout.bind(this)
+            }
+            handleLogin() {
+                this.setState({
+                    isLogin:true
+                })
+            }
+            handleLogout() {
+                this.setState({
+                    isLogin:false
+                })
+            }
+            render() {
+                let isLogin = this.state.isLogin;
+                // 最让我惊讶的地方，用变量替换组件，实现动态渲染，我的天呐
+                let button = null;
+                if (isLogin) {
+                    button = <LogoutButton onClick={this.handleLogout} />
+                }else {
+                    button = <LoginButton onClick={this.handleLogin} />
+                }
+                return (
+                    <div>
+                        <Greeting isLogin={isLogin} />
+                        {button}
+                    </div>
+                )
+            }
+        }
+        // ReactDOM.render(<Greeting isLogin={true} />,document.getElementById('root'));
+        ReactDOM.render(<LoginControl />,document.getElementById('root'))
+    </script>
+</body>
+</html>

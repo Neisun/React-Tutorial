@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>react中事件</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        class MyButton extends React.Component{
+            constructor(props) {
+                super(props);
+                this.state = {
+                    isOk:false
+                }
+                // 你可以在这里，把回调函数的this指向改一下
+                this.handleClick = this.handleClick.bind(this)
+                // 也可以直接在使用事件的位置，直接this.handleClick.bind(this)
+            }
+            render() {
+                return (
+                    <div>
+                        <button type="button" onClick={this.handleClick} >{this.state.isOk?'ok':'bad'}</button>
+                    </div>
+                )
+            }
+            handleClick() {
+                this.setState(preState => ({
+                    isOk:!preState.isOk
+                }))
+            }
+        }
+        ReactDOM.render(<MyButton />,document.getElementById('root'))
+    </script>
+</body>
+</html>

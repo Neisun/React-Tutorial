@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>状态与生命周期</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="target"></div>
+    <script type="text/babel">
+        // 看上去极为高大上的词语，其实很容易理解。
+        // 在渲染组件的demo中，有一个时钟的demo，那个demo是存在缺陷的。那种实现方式在于，每次都会渲染一遍组件，这非常浪费性能
+        // 我们重写时钟的demo，让时间计算变成组件自己的状态值
+        // 需要使用ES6 class 来扩充React.Component
+        class Clock extends React.Component{
+            constructor(props) {
+                super(props);
+                this.state = {
+                    time:new Date()
+                }
+            }
+            render () {
+                return (
+                    <div>{this.state.time.toLocaleTimeString()}</div>
+                )
+            }
+            tick () {
+                this.setState({
+                    time:new Date()
+                })
+            }
+            componentDidMount() {
+                this.timer = setInterval(this.tick.bind(this),1000);
+            }
+            componentWillUnmount() {
+                clearInterval(this.timer)
+            }
+        }
+        ReactDOM.render(<Clock />,document.getElementById('root'));
+        const MyClock = React.createClass({
+            getInitialState:function () {
+                return {
+                    time:new Date()
+                }
+            },
+            render:function () {
+                return (
+                    <div>
+                        现在的时间是：{this.state.time.toLocaleTimeString()}
+                    </div>
+                )
+            },
+            tick:function () {
+                this.setState({
+                    time:new Date()
+                })
+            },
+            componentDidMount:function () {
+                this.timer = setInterval(this.tick,1000);
+            },
+            componentWillUnmount:function () {
+                clearInterval(timer)
+            }
+        })
+        ReactDOM.render(<MyClock />,document.getElementById('target'))
+    </script>
+</body>
+</html>

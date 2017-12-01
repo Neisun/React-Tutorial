@@ -23,18 +23,13 @@
           };
         function Comment(props) {
             return (
-                <div>
-                    <div>
-                        <img src={props.author.avatarUrl} alt={props.author.name} />
+                <div className="comment">
+                    <UserInfo author={props.author} />
+                    <div className="comment-text">
+                        {props.text}
                     </div>
-                    <div>
-                        <span>{props.author.name}</span>
-                    </div>
-                    <div>
-                        <span>{props.text}</span>
-                    </div>
-                    <div>
-                        <span>{formatDate(props.date)}</span>
+                    <div className="comment-date">
+                        {formatDate(props.date)}
                     </div>
                 </div>
             )
@@ -42,6 +37,25 @@
         // 我们也应该把格式化时间的方法提取出来
         function formatDate(date) {
             return date.toLocaleDateString();
+        }
+        function Avatar(props) {
+            return (
+                <img className="avatar" 
+                    src={props.author.avatarUrl} 
+                    alt={props.author.name} 
+                />
+            )
+        };
+        // 然后再把用户信息那部分独立出来
+        function UserInfo(props) {
+            return (
+                <div className="userInfo">
+                        <Avatar author={props.author} />
+                        <div className="userInfo-name">
+                            {props.author.name}
+                        </div>
+                    </div>
+            )
         }
         // 这样的组件，更棒，也可以复用
         ReactDOM.render(
