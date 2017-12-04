@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>form元素</title>
+    <title>select元素</title>
     <script src="../build/react.js"></script>
     <script src="../build/react-dom.js"></script>
     <script src="../build/browser.min.js"></script>
@@ -12,41 +12,36 @@
 <body>
     <div id="root"></div>
     <script type="text/babel">
-        // 实现简单的数据绑定
         class Form extends React.Component{
             constructor(props) {
                 super(props);
                 this.state = {
-                    form:{
-                        inp:'',
-                        text:''
-                    }
+                    value:'橘子'
                 }
                 this.handleChange = this.handleChange.bind(this);
-                this.handleSubmit = this.handleSubmit.bind(this);
             }
             handleChange(e) {
-                let target = e.target;
                 this.setState({
-                    form:{
-                        inp:target.value
-                    }
+                    value:e.target.value
                 })
-            }
-            handleSubmit(e) {
-                alert('表单提交了，数据是'+this.state.form.inp);
-                e.preventDefault();
             }
             render() {
                 return (
-                    <form onSubmit={this.handleSubmit}>
-                        <input type="text" name="inp" value={this.state.form.inp} onChange={this.handleChange} />
-                        <input type="submit" value="提交" />
+                    <form>
+                        <label htmlFor="select">
+                            选择最喜欢的水果
+                            <select id="select" value={this.state.value} onChange={this.handleChange}>
+                                <option value="苹果">苹果</option>
+                                <option value="香蕉">香蕉</option>
+                                <option value="橘子">橘子</option>
+                            </select>
+                        </label>
+                        <p>你选择的是:{this.state.value}</p>
                     </form>
                 )
             }
         }
-        ReactDOM.render(<Form />,document.getElementById('root'));
+        ReactDOM.render(<Form />,document.getElementById('root'))
     </script>
 </body>
 </html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>温度计算器-提取出组件</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        function ShowBoil(props) {
+            if (props.celsius>=100) {
+                return <p>水沸腾啦！</p>
+            } else {
+                return <p>水还没有沸腾！</p>
+            }
+        }
+        class Calculator extends React.Component{
+            constructor(props) {
+                super(props);
+            }
+            render() {
+                const temperature = this.state.temperature;
+                return (
+                    <div>
+                        <TemperatureInput scale="c" />
+                        <TemperatureInput scale="f" />
+                    </div>
+                )
+            }
+        }
+        // 于是我们开始动手提取出组件，提取组件之前，我们知道这种组件，是应该有自己的状态的，于是
+        const scaleNames = {
+            'c':'Celsius',
+            'f':'Fahrenheit'
+        }
+        class TemperatureInput extends React.Component{
+            constructor(props) {
+                super(props);
+                this.state = {
+                    temperature:''
+                }
+                this.handleChange = this.handleChange.bind(this);
+            }
+            handleChange(e) {
+                this.setState({
+                    temperature:e.target.value
+                })
+            }
+            render() {
+                const temperature = this.state.temperature;
+                const scale = this.props.scale;
+                return (
+                    <fieldset>
+                        <legend>Enter temperature in {scaleNames[scale]}:</legend>
+                        <input type="text" onChange={this.handleChange} value={temperature} />
+                    </fieldset>
+                )
+            }
+        }
+        ReactDOM.render(<Calculator />,document.getElementById('root'));        
+    </script>
+</body>
+</html>

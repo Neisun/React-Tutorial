@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>提取state到父组件</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // 确切的说，是提取到最近的组件
+        function ShowBoil(props) {
+            if (props.celsius>=100) {
+                return <p>水沸腾啦！</p>
+            } else {
+                return <p>水还没有沸腾！</p>
+            }
+        }
+        const scaleNames = {
+            'c':'Celsius',
+            'f':'Fahrenheit'
+        }
+        class TemperatureInput extends React.Component{
+            constructor(props) {
+                super(props);
+                this.handleChange = this.handleChange.bind(this);
+            }
+            handleChange(e) {
+                this.props.handleChange(e.target.value);
+            }
+            render() {
+                const temperatrue = this.props.temperatrue;
+                const scale = this.props.scale;
+                return (
+                    <fieldset>
+                        <legend>Enter temperatrue in {scaleNames[scale]}</legend>
+                        <input value={temperatrue} onChange={this.handleChange} />
+                    </fieldset>
+                )
+            } 
+        }
+        class Calculator extends React.Component{
+            constructor(props) {
+                super(props);
+                this.state = {
+                    temperatrue:'',
+                    scale:'c'
+                }
+                this.handleChange = this.handleChange.bind(this);
+                this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+                this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+            }
+            handleChange(value) {
+                this.setState({
+                    temperatrue:value
+                })
+            }
+            handleCelsiusChange(temperatrue){
+                this.setState({
+                    scale:'c',
+                    temperatrue:temperatrue
+                })
+            }
+            handleFahrenheitChange(temperatrue) {
+                this.setState({
+                    scale:'f',
+                    temperatrue:temperatrue
+                })
+            }
+            render() {
+                const temperatrue = this.state.temperatrue;
+                const celsius  = this.state.scale === 'f'? tryConvert(temperatrue,toCelsius):temperatrue;
+                const fahrenheit = this.state.scale === 'c'?tryConvert(temperatrue,toFahrenheit):temperatrue;
+                return (
+                <div>
+                    <TemperatureInput scale="c" handleChange={this.handleCelsiusChange} temperatrue={celsius} />
+                    <TemperatureInput scale="f" handleChange={this.handleFahrenheitChange} temperatrue={fahrenheit} />
+                    <ShowBoil celsius={celsius} />
+                </div>
+                )
+
+            }
+        }
+        // 加入换算方法
+        function toCelsius(fahrenheit) {
+            return (fahrenheit - 32) * 5 / 9;
+        }
+
+        function toFahrenheit(celsius) {
+            return (celsius * 9 / 5) + 32;
+        }
+        // 转化方法
+        function tryConvert(temperatrue,convert) {
+            const input = parseFloat(temperatrue);
+            if (isNaN(input)) {
+                return ""
+            }
+            const output = convert(input);
+            const rounded = Math.round(output * 1000) / 1000;
+            return rounded.toString();
+        }
+        ReactDOM.render(<Calculator />,document.getElementById('root'))
+    </script>
+</body>
+</html>

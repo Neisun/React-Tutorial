@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>温度计算器</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // 最简单的方式，只有一个温度计算器，通过计算摄氏度来计算水是否沸腾了
+        function ShowBoil(props) {
+            if (props.celsius>=100) {
+                return <p>水沸腾啦！</p>
+            } else {
+                return <p>水还没有沸腾！</p>
+            }
+        }
+        // 我们创建一个计算器，通过用户的输入来判断水是否沸腾了，我们需要将用户输入的温度传入ShowBoil组件，告诉它，显示哪个结果
+        // 所以这种计算器组件是属于表单元素，并且有自己的状态
+        class Calculator extends React.Component{
+            constructor(props) {
+                super(props);
+                this.state = {
+                    temperature:''
+                }
+                this.handleChange = this.handleChange.bind(this);
+            }
+            handleChange(e) {
+                this.setState({
+                    temperature:e.target.value
+                })
+            }
+            render() {
+                const temperature = this.state.temperature;
+                return (
+                    <fieldset>
+                        <legend>Enter temperature in celsius:</legend>
+                        <input type="text" onChange={this.handleChange} value={temperature} />
+                        <ShowBoil celsius={temperature} />
+                    </fieldset>
+                )
+            }
+        }
+        ReactDOM.render(<Calculator />,document.getElementById('root'));
+    </script>
+</body>
+</html>

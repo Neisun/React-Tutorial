@@ -716,3 +716,483 @@ function List2(props) {
 }
 ReactDOM.render(<List2 numbers={numbers} /> ,document.getElementById('root2'))
 ```
+### 表单部分
+
+起初，我以为react的表单会和vue一样，但发现，结果并不是这样的。并没有提供额外的指令帮助我们绑定一个值。
+
+> 单行文本
+
+实现简单的数据绑定
+
+```js
+// 实现简单的数据绑定
+class Form extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            form:{
+                inp:'',
+                text:''
+            }
+        }
+        this.handleChangeInp = this.handleChangeInp.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    handleChangeInp(e) {
+        let target = e.target;
+        this.setState({
+            form:{
+                inp:target.value
+            }
+        })
+    }
+    handleSubmit(e) {
+        alert('表单提交了，数据是'+this.state.form.inp);
+        e.preventDefault();
+    }
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <input type="text" name="inp" value={this.state.form.inp} onChange={this.handleChangeInp} />
+                <input type="submit" value="提交" />
+            </form>
+        )
+    }
+}
+ReactDOM.render(<Form />,document.getElementById('root'));
+```
+上述代码，创建了一个表单组件（<Form />）,数据的绑定是通过onChange事件来刷新state存储的值，同时让value属性等于this.state.value。现在明白了么，并不是跟vue一样，直接v-model一个变量，而是用的这种方式，略显麻烦。更麻烦的是，如果处理多个同种类型的元素。比如有两个单行文本，那么绑定的onChange事件需要写两个，分别对应这两个单行文本，不然无法一次性刷新两个单行文本的state值。暂时，我刚看到这里，我没有想到更好的方式。
+
+> 多行文本(textarea) 
+
+绑定的方式与单行文本是一样的，直接略过。不知道为什么，在使用React表单元素的时候，内心觉得很恶心。这种方式的表单说实话，真的很繁琐。还是得硬着头皮看下去。
+
+> select
+
+在常规的html中，我们创建select是这样的。
+
+```html
+<select>
+  <option value="grapefruit">Grapefruit</option>
+  <option value="lime">Lime</option>
+  <option selected value="coconut">Coconut</option>
+  <option value="mango">Mango</option>
+</select>
+```
+selected表示，当前选项被选中。但是在react中，我们给根元素即select绑定value，然后添加onChange事件，刷新state值，来达到选择的结果。
+
+```js
+class Form extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            value:'橘子'
+        }
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(e) {
+        this.setState({
+            value:e.target.value
+        })
+    }
+    render() {
+        return (
+            <form>
+                <label htmlFor="select">
+                    选择最喜欢的水果
+                    <select id="select" value={this.state.value} onChange={this.handleChange}>
+                        <option value="苹果">苹果</option>
+                        <option value="香蕉">香蕉</option>
+                        <option value="橘子">橘子</option>
+                    </select>
+                </label>
+                <p>你选择的是:{this.state.value}</p>
+            </form>
+        )
+    }
+}
+ReactDOM.render(<Form />,document.getElementById('root'))
+```
+### 状态提升
+
+又是一个让人听起来不理解的词，这个状态提升是啥意思？我们通过例子，一步一步剖析这个`状态提升`
+
+> 温度计算器
+
+现在产品跑过来跟你说，有一个需求，需要写一个温度计算器。根据用户的输入，来判断水是否沸腾了。
+
+```js
+function ShowBoil(props) {
+    if (props.celsius>=100) {
+        return <p>水沸腾啦！</p>
+    } else {
+        return <p>水还没有沸腾！</p>
+    }
+}
+// 我们创建一个计算器，通过用户的输入来判断水是否沸腾了，我们需要将用户输入的温度传入ShowBoil组件，告诉它，显示哪个结果
+// 所以这种计算器组件是属于表单元素，并且有自己的状态
+class Calculator extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            temperature:''
+        }
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(e) {
+        this.setState({
+            temperature:e.target.value
+        })
+    }
+    render() {
+        const temperature = this.state.temperature;
+        return (
+            <fieldset>
+                <legend>Enter temperature in celsius:</legend>
+                <input type="text" onChange={this.handleChange} value={temperature} />
+                <ShowBoil celsius={temperature} />
+            </fieldset>
+        )
+    }
+}
+ReactDOM.render(<Calculator />,document.getElementById('root'));
+```
+上边的就是最简单的方式。但是，你要知道的。需求是个变量，你的产品又跑过来告诉你，需求得改一下。需要你再写一个输入框，用来表示华氏度，因为我们上边写的那个是摄氏度的。并且要求我们这两个输入框同步显示。
+
+那么，分析完了需求。我们得把输入的表单当做一个组件提取出来。然后我们就动手开始提取组件了，痛并快乐着，期待着，产品不要再过来。
+
+```js
+function ShowBoil(props) {
+    if (props.celsius>=100) {
+        return <p>水沸腾啦！</p>
+    } else {
+        return <p>水还没有沸腾！</p>
+    }
+}
+class Calculator extends React.Component{
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        const temperature = this.state.temperature;
+        return (
+            <div>
+                <TemperatureInput scale="c" />
+                <TemperatureInput scale="f" />
+            </div>
+        )
+    }
+}
+// 于是我们开始动手提取出组件，提取组件之前，我们知道这种组件，是应该有自己的状态的，于是
+const scaleNames = {
+    'c':'Celsius',
+    'f':'Fahrenheit'
+}
+class TemperatureInput extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            temperature:''
+        }
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(e) {
+        this.setState({
+            temperature:e.target.value
+        })
+    }
+    render() {
+        const temperature = this.state.temperature;
+        const scale = this.props.scale;
+        return (
+            <fieldset>
+                <legend>Enter temperature in {scaleNames[scale]}:</legend>
+                <input type="text" onChange={this.handleChange} value={temperature} />
+            </fieldset>
+        )
+    }
+}
+ReactDOM.render(<Calculator />,document.getElementById('root'));   
+```
+但是，现在我们自己把自己给卡住了。组件是提取出来了，但是每个组件都有各自的state，然后还没有办法得到这个state里的值，拿什么去判断。我的ShowBoil组件没法显示啊。而且这二者的同步还没有实现。所有的这些问题看起来乱七八糟没有头绪，实际上，因为两个组件各自为战，没有一个共享状态。如果我们把这两个组件的state给提出到他们的父组件中，是不是就可以解决这个问题。带着疑惑，我们试一试。看看怎么把这种state提取出来。
+
+```js
+const scaleNames = {
+    'c':'Celsius',
+    'f':'Fahrenheit'
+}
+class TemperatureInput extends React.Component{
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(e) {
+        this.props.handleChange(e.target.value);
+    }
+    render() {
+        const temperatrue = this.props.temperatrue;
+        const scale = this.props.scale;
+        return (
+            <fieldset>
+                <legend>Enter temperatrue in {scaleNames[scale]}</legend>
+                <input value={temperatrue} onChange={this.handleChange} />
+            </fieldset>
+        )
+    } 
+}
+```
+对应的，Calculator组件的形式应该是这样的。
+
+```js
+class Calculator extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            temperatrue:''
+        }
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(value) {
+        this.setState({
+            temperatrue:value
+        })
+    }
+    render() {
+        const temperatrue = this.state.temperatrue;
+        return (
+        <div>
+            <TemperatureInput scale="c" handleChange={this.handleChange} temperatrue={temperatrue} />
+            <TemperatureInput scale="f" handleChange={this.handleChange} temperatrue={temperatrue} />
+        </div>
+        )
+
+    }
+}
+```
+结合在一起的代码
+
+```js
+function ShowBoil(props) {
+    if (props.celsius>=100) {
+        return <p>水沸腾啦！</p>
+    } else {
+        return <p>水还没有沸腾！</p>
+    }
+}
+const scaleNames = {
+    'c':'Celsius',
+    'f':'Fahrenheit'
+}
+class TemperatureInput extends React.Component{
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(e) {
+        this.props.handleChange(e.target.value);
+    }
+    render() {
+        const temperatrue = this.props.temperatrue;
+        const scale = this.props.scale;
+        return (
+            <fieldset>
+                <legend>Enter temperatrue in {scaleNames[scale]}</legend>
+                <input value={temperatrue} onChange={this.handleChange} />
+            </fieldset>
+        )
+    } 
+}
+class Calculator extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            temperatrue:''
+        }
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(value) {
+        this.setState({
+            temperatrue:value
+        })
+    }
+    render() {
+        const temperatrue = this.state.temperatrue;
+        return (
+        <div>
+            <TemperatureInput scale="c" handleChange={this.handleChange} temperatrue={temperatrue} />
+            <TemperatureInput scale="f" handleChange={this.handleChange} temperatrue={temperatrue} />
+        </div>
+        )
+
+    }
+}
+ReactDOM.render(<Calculator />,document.getElementById('root'))
+```
+这样还没完，华氏度与摄氏度的转化没有完成，动态显示ShowBoil组件还没有完成呢。
+所以还需要继续转化。
+
+一种温度要显示两种形式，怎么知道，当前的温度是哪种形式的温度是华氏度还是摄氏度呢？所以又需要一种状态值，来表示当前的温度是哪种形式的值。我们用scale表示。
+
+当华氏度组件用户输入的时候，我们把这种scale设置为华氏度，当摄氏度组件用户输入的时候，我们把这种scale设置为摄氏度。
+
+然后，我们再根据scale的状态值，来进行单位换算。基本上就大功告成了。
+
+我们分析的结果就是，需要两个onChange事件，用来控制scale的值，并同时设置temperature。还需要单位转化方法。
+
+先看一下单位转化方法。
+```js
+// 加入换算方法
+function toCelsius(fahrenheit) {
+    return (fahrenheit - 32) * 5 / 9;
+}
+
+function toFahrenheit(celsius) {
+    return (celsius * 9 / 5) + 32;
+}
+// 转化方法
+function tryConvert(temperatrue,convert) {
+    const input = parseFloat(temperatrue);
+    if (isNaN(input)) {
+        return ""
+    }
+    const output = convert(input);
+    const rounded = Math.round(output * 1000) / 1000;
+    return rounded.toString();
+}
+```
+然后我们修改Calculator组件
+
+```js
+class Calculator extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            temperatrue:'',
+            scale:'c'
+        }
+        this.handleChange = this.handleChange.bind(this);
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+    }
+    handleChange(value) {
+        this.setState({
+            temperatrue:value
+        })
+    }
+    handleCelsiusChange(temperatrue){
+        this.setState({
+            scale:'c',
+            temperatrue:temperatrue
+        })
+    }
+    handleFahrenheitChange(temperatrue) {
+        this.setState({
+            scale:'f',
+            temperatrue:temperatrue
+        })
+    }
+    render() {
+        const temperatrue = this.state.temperatrue;
+        const celsius  = this.state.scale === 'f'? tryConvert(temperatrue,toCelsius):temperatrue;
+        const fahrenheit = this.state.scale === 'c'?tryConvert(temperatrue,toFahrenheit):temperatrue;
+        return (
+        <div>
+            <TemperatureInput scale="c" handleChange={this.handleCelsiusChange} temperatrue={celsius} />
+            <TemperatureInput scale="f" handleChange={this.handleFahrenheitChange} temperatrue={fahrenheit} />
+            <ShowBoil celsius={celsius} />
+        </div>
+        )
+
+    }
+}
+```
+最终完整的代码
+
+```js
+function ShowBoil(props) {
+    if (props.celsius>=100) {
+        return <p>水沸腾啦！</p>
+    } else {
+        return <p>水还没有沸腾！</p>
+    }
+}
+const scaleNames = {
+    'c':'Celsius',
+    'f':'Fahrenheit'
+}
+class TemperatureInput extends React.Component{
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(e) {
+        this.props.handleChange(e.target.value);
+    }
+    render() {
+        const temperatrue = this.props.temperatrue;
+        const scale = this.props.scale;
+        return (
+            <fieldset>
+                <legend>Enter temperatrue in {scaleNames[scale]}</legend>
+                <input value={temperatrue} onChange={this.handleChange} />
+            </fieldset>
+        )
+    } 
+}
+class Calculator extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            temperatrue:'',
+            scale:'c'
+        }
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+    }
+    handleCelsiusChange(temperatrue){
+        this.setState({
+            scale:'c',
+            temperatrue:temperatrue
+        })
+    }
+    handleFahrenheitChange(temperatrue) {
+        this.setState({
+            scale:'f',
+            temperatrue:temperatrue
+        })
+    }
+    render() {
+        const temperatrue = this.state.temperatrue;
+        const celsius  = this.state.scale === 'f'? tryConvert(temperatrue,toCelsius):temperatrue;
+        const fahrenheit = this.state.scale === 'c'?tryConvert(temperatrue,toFahrenheit):temperatrue;
+        return (
+        <div>
+            <TemperatureInput scale="c" handleChange={this.handleCelsiusChange} temperatrue={celsius} />
+            <TemperatureInput scale="f" handleChange={this.handleFahrenheitChange} temperatrue={fahrenheit} />
+            <ShowBoil celsius={celsius} />
+        </div>
+        )
+
+    }
+}
+// 加入换算方法
+function toCelsius(fahrenheit) {
+    return (fahrenheit - 32) * 5 / 9;
+}
+
+function toFahrenheit(celsius) {
+    return (celsius * 9 / 5) + 32;
+}
+// 转化方法
+function tryConvert(temperatrue,convert) {
+    const input = parseFloat(temperatrue);
+    if (isNaN(input)) {
+        return ""
+    }
+    const output = convert(input);
+    const rounded = Math.round(output * 1000) / 1000;
+    return rounded.toString();
+}
+ReactDOM.render(<Calculator />,document.getElementById('root'))
+```
+这是一个循序渐进的过程，并不是一蹴而就的结果。所以，需要我们从最简单的方式一点点优化到最终的代码形式。重要的是这个思维过程。把复杂的东西一点点剖析成简单的，然后组合在一起。
