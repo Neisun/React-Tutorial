@@ -19,9 +19,9 @@
 > ReactDOM.render(element,root)
 
 ```js
-ReactDOM.render(<h1>Hello,react!</h1>,document.getElementById('root'));
+ReactDOM.render(<h1> Hello,react!</h1> ,document.getElementById('root'));
 // 当然，你可以把html标签提取出来
-const element = <h1>Hello,react!</h1>;
+const element = <h1> Hello,react!</h1> ;
 ReactDOM.render(element,document.getElementById('root'));
 ```
 在页面中就可以渲染出来了。
@@ -30,26 +30,26 @@ ReactDOM.render(element,document.getElementById('root'));
 
 React.js的开发人员，脑洞大开，创造的这种语法，很棒。可以将js表达式和html混入。非常棒！
 
->最简洁的写法
+> 最简洁的写法
 
 ```js
-const element1 = <h1>hello,world!</h1>;
+const element1 = <h1> hello,world!</h1> ;
 ```
 要知道，这种写法，在原生js中，只能通过字符串拼接。
 
->如果标签有很多，怎么办？
+> 如果标签有很多，怎么办？
 
 ```js
 const element2 = (
-    <div>
-        <p>this is a paragraph!</p>
-        <span>this is a span!</span>
-    </div>
+    <div> 
+        <p> this is a paragraph!</p> 
+        <span> this is a span!</span> 
+    </div> 
 )
 ```
 **可以用()将标签包裹起来。**
 
->可以把js表达式以{}形式嵌入到html中
+> 可以把js表达式以{}形式嵌入到html中
 
 ```js
 // 格式化姓名的函数
@@ -62,20 +62,20 @@ const user = {
 }
 // 可以在html中直接{js}，{}会被解析为js表达式
 const element3 = (
-    <div>
+    <div> 
         Hello,{formatName(user)}!
-    </div>
+    </div> 
 )
 ```
-**jsx会把{}当做js表达式解析，<>会被当成html解析。**
+**jsx会把{}当做js表达式解析，<> 会被当成html解析。**
 
->想指定属性？这很容易，属性用""包裹的就是字符串。不想这个属性是字符串？也很容易的。
+> 想指定属性？这很容易，属性用""包裹的就是字符串。不想这个属性是字符串？也很容易的。
 
 ```js
 var user = {
     userId:10010
 }
-const element4 = <div name="Neisun" user={name}></div>
+const element4 = <div name="Neisun" user={name}> </div> 
 ```
 ### 渲染元素
 
@@ -85,7 +85,7 @@ const element4 = <div name="Neisun" user={name}></div>
 // 以时钟的demo看一下渲染一个元素
 function tick() {
     const element = (
-        <p>Time is {new Date().toLocaleTimeString()}</p>
+        <p> Time is {new Date().toLocaleTimeString()}</p> 
     );
     ReactDOM.render(element,document.getElementById('root'))
 }
@@ -97,33 +97,34 @@ setInterval(tick,1000);
 
 能独立出来的组件是react非常棒的一个地方。要知道在开发过程中，有一些业务模块复用性是非常高的。独立出来的组件，可以提供我们重复使用。
 
->最简单的组件（不包含状态值），我们使用函数来构造最便捷
+> 最简单的组件（不包含状态值），我们使用函数来构造最便捷，称为函数组件
 
 ```js
 //函数式组件
 function Welcome(props) {
-    return <h1>Hello,{props.name}</h1>
+    return <h1> Hello,{props.name}</h1> 
 };
-ReactDOM.render(<Welcome name="Neisun" />,document.getElementById('root'));
+ReactDOM.render(<Welcome name="Neisun" /> ,document.getElementById('root'));
 // 或者，我们这么写也是可以的
-const element = <Welcome name="Neisun" />;
+const element = <Welcome name="Neisun" /> ;
 ReactDOM.render(element,document.getElementById('root'));
 ```
->组件的嵌套，官方术语，构成组件（特别垃圾的翻译）
+> 组件的嵌套，官方术语，构成组件（特别垃圾的翻译）
 
 ```js
 function App() {
     return (
-        <div>
-            <Welcome name="David" />
-            <Welcome name="John" />
-            <Welcome name="Joe" />
-        </div>
+        <div> 
+            <Welcome name="David" /> 
+            <Welcome name="John" /> 
+            <Welcome name="Joe" /> 
+        </div> 
     )
 }
-ReactDOM.render(<App />,document.getElementById('root'));
+ReactDOM.render(<App /> ,document.getElementById('root'));
+// App组件是由三个Welcome组件构成的
 ```
->提取组件
+> 提取组件
 
 我们创建一个用户评论组件。其中包含，用户的头像，用户名，用户评论内容，评论日期。
 
@@ -138,6 +139,7 @@ const comment = {
         avatarUrl: 'http://placekitten.com/g/64/64'
     }
 };
+// 数据结构分三部分组成，时间，评论内容，作者（作者部分分为，作者名称，与头像url）
 ```
 数据结构分三部分，date部分，text部分，author部分；
 
@@ -146,22 +148,22 @@ const comment = {
 ```js
 function Comment(props) {
     return (
-        <div className="comment">
-            <div className="userInfo">
+        <div className="comment"> 
+            <div className="userInfo"> 
                 <img className="avatar" 
                     src={props.author.avatarUrl} 
-                    alt={props.author.name} />
-                <div className="userInfo-name">
+                    alt={props.author.name} /> 
+                <div className="userInfo-name"> 
                     {props.author.name}
-                </div>
-            </div>
-            <div className="comment-text">
+                </div> 
+            </div> 
+            <div className="comment-text"> 
                 {props.text}
-            </div>
-            <div className="comment-date">
+            </div> 
+            <div className="comment-date"> 
                 {formatDate(props.date)}
-            </div>
-        </div>
+            </div> 
+        </div> 
     )
 };
 // 然后把格式化日期的功能提取出来
@@ -174,7 +176,7 @@ ReactDOM.render(
         author={comment.author}
         text={comment.text}
         date={comment.date}
-    />,
+    /> ,
     document.getElementById('root')   
 )
 ```
@@ -187,26 +189,26 @@ function Avatar(props) {
         <img className="avatar" 
             src={props.author.avatarUrl} 
             alt={props.author.name} 
-        />
+        /> 
     )
 };
 // 然后Comment组件的形式就变为
 function Comment(props) {
     return (
-        <div className="comment">
-            <div className="userInfo">
-                <Avatar author={props.author}>
-                <div className="userInfo-name">
+        <div className="comment"> 
+            <div className="userInfo"> 
+                <Avatar author={props.author}> 
+                <div className="userInfo-name"> 
                     {props.author.name}
-                </div>
-            </div>
-            <div className="comment-text">
+                </div> 
+            </div> 
+            <div className="comment-text"> 
                 {props.text}
-            </div>
-            <div className="comment-date">
+            </div> 
+            <div className="comment-date"> 
                 {formatDate(props.date)}
-            </div>
-        </div>
+            </div> 
+        </div> 
     )
 };
 ```
@@ -215,26 +217,26 @@ function Comment(props) {
 ```js
 function UserInfo(props) {
     return (
-        <div className="userInfo">
-                <Avatar author={props.author} />
-                <div className="userInfo-name">
+        <div className="userInfo"> 
+                <Avatar author={props.author} /> 
+                <div className="userInfo-name"> 
                     {props.author.name}
-                </div>
-            </div>
+                </div> 
+            </div> 
     )
 }
 // 于是，Commet组件还能进一步变形
 function Comment(props) {
     return (
-        <div className="comment">
-            <UserInfo author={props.author} />
-            <div className="comment-text">
+        <div className="comment"> 
+            <UserInfo author={props.author} /> 
+            <div className="comment-text"> 
                 {props.text}
-            </div>
-            <div className="comment-date">
+            </div> 
+            <div className="comment-date"> 
                 {formatDate(props.date)}
-            </div>
-        </div>
+            </div> 
+        </div> 
     )
 };
 ```
@@ -252,15 +254,15 @@ const comment = {
     };
 function Comment(props) {
     return (
-        <div className="comment">
-            <UserInfo author={props.author} />
-            <div className="comment-text">
+        <div className="comment"> 
+            <UserInfo author={props.author} /> 
+            <div className="comment-text"> 
                 {props.text}
-            </div>
-            <div className="comment-date">
+            </div> 
+            <div className="comment-date"> 
                 {formatDate(props.date)}
-            </div>
-        </div>
+            </div> 
+        </div> 
     )
 };
 // 我们也应该把格式化时间的方法提取出来
@@ -273,18 +275,18 @@ function Avatar(props) {
         <img className="avatar" 
             src={props.author.avatarUrl} 
             alt={props.author.name} 
-        />
+        /> 
     )
 };
 // 然后再把用户信息那部分独立出来
 function UserInfo(props) {
     return (
-        <div className="userInfo">
-                <Avatar author={props.author} />
-                <div className="userInfo-name">
+        <div className="userInfo"> 
+                <Avatar author={props.author} /> 
+                <div className="userInfo-name"> 
                     {props.author.name}
-                </div>
-            </div>
+                </div> 
+            </div> 
     )
 }
 // 这样的组件，更棒，也可以复用
@@ -293,7 +295,7 @@ ReactDOM.render(
         author={comment.author}
         text={comment.text}
         date={comment.date}
-    />,
+    /> ,
     document.getElementById('root')   
 )
 ```
@@ -309,7 +311,7 @@ ReactDOM.render(
 
 回头想想，时钟的demo。那个案例的缺陷在于，每隔一秒我们都会利用`ReactDOM.render`函数来渲染一次组件。真的需要这么做么？浏览器解析DOM是非常消耗性能和浪费时间的，那么我们可以把每次时间的改变放在组件内完成，我们只需要渲染一次内容不就可以了么。这可以实现么？
 
-当然，借助于`React.Component`来定义一个组件，然后设置state可以完成组件有自己的状态值。
+当然，借助于`React.Component`来定义一个组件，然后设置state可以完成组件有自己的状态值。这样定义的组件，称为类组件。
 
 ```js
 // ES6 class的写法继承React.Component
@@ -322,7 +324,7 @@ class Clock extends React.Component{
     }
     render () {
         return (
-            <div>{this.state.time.toLocaleTimeString()}</div>
+            <div> {this.state.time.toLocaleTimeString()}</div> 
         )
     }
     tick () {
@@ -338,7 +340,7 @@ class Clock extends React.Component{
         clearInterval(this.timer)
     }
 }
-ReactDOM.render(<Clock />,document.getElementById('root'));
+ReactDOM.render(<Clock /> ,document.getElementById('root'));
 ```
 看来学习React的成本也不是很低呢，最起码你需要了解一下ES6的class写法，哈哈。
 
@@ -355,7 +357,7 @@ ReactDOM.render(<Clock />,document.getElementById('root'));
 
 还有几点需要说明的，是关于state的。
 
->setState
+> setState
 
 - 我们更新状态值，需要使用`setState({})`，不然数据不会更新！！！
 - 异步操作时候，可以向`setState`传递一个函数
@@ -397,9 +399,9 @@ const MyClock = React.createClass({
     },
     render:function () {
         return (
-            <div>
+            <div> 
                 现在的时间是：{this.state.time.toLocaleTimeString()}
-            </div>
+            </div> 
         )
     },
     tick:function () {
@@ -414,7 +416,7 @@ const MyClock = React.createClass({
         clearInterval(timer)
     }
 })
-ReactDOM.render(<MyClock />,document.getElementById('target'))
+ReactDOM.render(<MyClock /> ,document.getElementById('target'))
 ```
 ### 事件
 
@@ -438,10 +440,10 @@ class MyButton extends React.Component{
     }
     render() {
         return (
-            <div>
+            <div> 
                 // 或者在这里this.handleClick.bind(this)，此处当做注释用，注释方式有问题
-                <button type="button" onClick={this.handleClick} >{this.state.isOk?'ok':'bad'}</button>
-            </div>
+                <button type="button" onClick={this.handleClick} > {this.state.isOk?'ok':'bad'}</button> 
+            </div> 
         )
     }
     handleClick() {
@@ -450,7 +452,7 @@ class MyButton extends React.Component{
         }))
     }
 }
-ReactDOM.render(<MyButton />,document.getElementById('root'))
+ReactDOM.render(<MyButton /> ,document.getElementById('root'))
 ```
 ### 条件渲染部分
 
@@ -461,11 +463,11 @@ ReactDOM.render(<MyButton />,document.getElementById('root'))
 ```js
 // UserGreeting组件
 function UserGreeting(props) {
-    return <h1>欢迎回来！</h1>
+    return <h1> 欢迎回来！</h1> 
 }
 // GuestGreeting组件
 function GuestGreeting(props) {
-    return <h1>请先登录！</h1>
+    return <h1> 请先登录！</h1> 
 }
 ```
 都是欢迎用户的组件，但是需要判断用户是否登录，若登录了，那么渲染UserGreeting组件，反之，渲染GuestGreeting组件；
@@ -476,13 +478,13 @@ function GuestGreeting(props) {
 function Greeting(props) {
     let isLogin = props.isLogin;
     if (isLogin) {
-        return <UserGreeting />;
+        return <UserGreeting /> ;
     }else {
-        return <GuestGreeting />;
+        return <GuestGreeting /> ;
     }
 }
-ReactDOM.render(<Greeting isLogin={true} />,document.getElementById('root));
-// ReactDOM.render(<Greeting isLogin={false} />,document.getElementById('root));
+ReactDOM.render(<Greeting isLogin={true} /> ,document.getElementById('root));
+// ReactDOM.render(<Greeting isLogin={false} /> ,document.getElementById('root));
 ```
 但是这不符合规矩啊，我们想通过一个按钮来控制。当显示UerGreeting组件时候，出现按钮可以让他退出登录。让出现GuestGreeting组件时候，出现按钮提示他登录。
 
@@ -491,20 +493,20 @@ ReactDOM.render(<Greeting isLogin={true} />,document.getElementById('root));
 ```js
 function LoginButton(props) {
     return (
-        <button onClick={props.onClick}>登录</button>
+        <button onClick={props.onClick}> 登录</button> 
     )
 }
 function LogoutButton(props) {
     return (
-        <button onClick={props.onClick}>退出</button>
+        <button onClick={props.onClick}> 退出</button> 
     )
 }
 ```
-在创建一个有状态的组件，用来根据state来渲染LoginButton或者LogoutButton组件，同时也会渲染Greeting组件。
+再创建一个有状态的组件，用来根据state来渲染LoginButton或者LogoutButton组件，同时也会渲染Greeting组件。
 
->元素变量
+> 元素变量
 
-我们用变量来储存元素。根据条件来渲染变量同时就是渲染一个元素。
+我们用变量来储存元素。根据条件来渲染变量同时就是渲染一个元素。在这里，值得是用变量根据条件动态的储存按钮组件。说实话，第一次看到这种写法，我着实被惊到了。
 
 ```js
 // 需要一个有状态的组件，渲染LoginButton或者LogoutButton，同时渲染Greeting组件
@@ -532,21 +534,21 @@ class LoginControl extends React.Component{
         // 最让我惊讶的地方，用变量替换组件，实现动态渲染，我的天呐
         let button = null;
         if (isLogin) {
-            button = <LogoutButton onClick={this.handleLogout} />
+            button = <LogoutButton onClick={this.handleLogout} /> 
         }else {
-            button = <LoginButton onClick={this.handleLogin} />
+            button = <LoginButton onClick={this.handleLogin} /> 
         }
         return (
-            <div>
-                <Greeting isLogin={isLogin} />
+            <div> 
+                <Greeting isLogin={isLogin} /> 
             // 然后在这里，把button这个变量渲染出来
                 {button}
-            </div>
+            </div> 
         )
     }
 }
 ```
->条件渲染内联语句
+> 条件渲染内联语句
 
 这也是让我比较惊讶的，竟然可以这么使用。在某些情况下，我们不想使用if进行判断，可使用内联语句
 
@@ -555,20 +557,22 @@ class LoginControl extends React.Component{
 function MailBox(props) {
     const unReadMessage = props.unReadMessage;
     return (
-        <div>
+        <div> 
             Hello!
-            {unReadMessage.length>0&&
-                <h2>
+            {unReadMessage.length > 0 &&
+                <h2> 
                     You have {unReadMessage.length} unread message.
-                </h2>
+                </h2> 
             }
-        </div>
+        </div> 
     )
 }
 const unReadMessage = ['msg1','msg2','msg3'];
-ReactDOM.render(<MailBox unReadMessage={unReadMessage} />,document.getElementById('root'));
+ReactDOM.render(<MailBox unReadMessage={unReadMessage} /> ,document.getElementById('root'));
 ```
->三元表达式也是可以的
+可以看出，根据unReadMessage.length做条件判断，如果为false，那么整个花括号{}里的代码形同虚设，不会执行，如果为true，那么会执行&&语句后面的jsx语法语句。`excellent` ！！！！
+
+> 三元表达式也是可以的
 
 ```js
 class Login extends React.Component{
@@ -581,17 +585,17 @@ class Login extends React.Component{
     render() {
         const isLogin = this.state.isLogin;
         return (
-            <div>
-                <b>{isLogin?'user':'not'} login!</b>
-            </div>
+            <div> 
+                <b> {isLogin?'user':'not'} login!</b> 
+            </div> 
         )
     }
 }
-ReactDOM.render(<Login />,document.getElementById('root'))
+ReactDOM.render(<Login /> ,document.getElementById('root'))
 ```
->防止组件渲染
+> 防止组件渲染
 
-有的时候，我们不想渲染一个组件，那么我们就返回null
+有的时候，我们不想渲染一个组件，那么我们就返回`null`
 
 ```js
 // 有的时候不想渲染一个组件，那么我们就返回null
@@ -600,9 +604,9 @@ function Warning(props) {
         return null;
     }else {
         return (
-            <div className="warning">
+            <div className="warning"> 
                 Warning!
-            </div>
+            </div> 
         )
     }
 }
@@ -622,26 +626,28 @@ class Toggle extends React.Component{
     render() {
         const warning = this.state.warnFlag;
         return (
-            <div>
-                <Warning warning={warning} />
-                <button onClick={this.handleClick}>{warning?'hide':'show'}</button>
-            </div>
+            <div> 
+                <Warning warning={warning} /> 
+                <button onClick={this.handleClick}> {warning?'hide':'show'}</button> 
+            </div> 
         )
     }
 }
-ReactDOM.render(<Toggle />,document.getElementById('root'))
+ReactDOM.render(<Toggle /> ,document.getElementById('root'))
 ```
 ### 列表渲染
 
-列表渲染利用的是map这个函数
+列表渲染利用的是map这个函数，map不单单是数组的方法。他是所有可迭代对象的方法。
 
 ```js
 var numbers = [1,2,3,4,5];
-var double = numbers.map((item) => item*2);
+var double = numbers.map((item) => item * 2);
 // 结果
 // [2,4,6,8,10]
 ```
->最通用的方式
+> 最通用的方式
+
+我们直接展示最常使用的方式，然后逐渐剖析别的方式。
 
 ```js
 //直接展示最常用的列表渲染的方法
@@ -652,16 +658,18 @@ var numbers = [
 ] 
 // 使用map方式来进行列表渲染
 function List(props) {
-    const listItems = props.numbers.map((item,index) =>
-        <li key={item.id}>{item.text}</li>
+    // 咱们使用一个变量listItems储存一下节点列表
+    const listItems = props.numbers.map((item,index) => 
+        <li key={item.id}> {item.text}</li> 
     );
+    // 在这里直接把listItems利用jsx语法，插入到ul中，很便捷
     return (
-        <ul>{listItems}</ul>
+        <ul> {listItems}</ul> 
     )
 }
-ReactDOM.render(<List numbers={numbers} />,document.getElementById('root'))
+ReactDOM.render(<List numbers={numbers} /> ,document.getElementById('root'))
 ```
-如果你不想利用一个变量去存listItems，也可以直接在ul中渲染，使用jsx语法，比如这样
+如果你不想利用一个变量去存listItems，也可以直接在ul中渲染，使用jsx语法，比如像下边这样
 
 > jsx嵌入map
 
@@ -670,36 +678,41 @@ ReactDOM.render(<List numbers={numbers} />,document.getElementById('root'))
 function List1(props) {
     const numbers = props.numbers;
     return(
-        <ul>
+        <ul> 
         {
-            numbers.map((item,index) =>
-                <li key={item.id}>{item.text}</li>    
+            numbers.map((item,index) => 
+                <li key={item.id}> {item.text}</li>    
             )
         }
-        </ul>
+        </ul> 
     )
 }
-ReactDOM.render(<List1 numbers={numbers} />,document.getElementById('target'))
+ReactDOM.render(<List1 numbers={numbers} /> ,document.getElementById('target'))
 ```
->不要忘了key
+> 不要忘了key
 
-key是用来表示每一个渲染的元素或者组件的唯一标识，最好的方式是数据中有列表的id，实在不行，就用数组的下标标识，所以不能缺少。
+key是用来表示每一个渲染的元素或者组件的唯一标识，最好的方式是数据中有id，实在不行，就用数组的下标标识，总之不能缺少。因为React根据这个来判断是否出现了变化，出现变化那么就会把变化的DOM渲染出来，反之不会渲染。
 
 我们看一个遍历组件的例子
 
 ```js
 // 如果是想遍历一个组件，那么你需要给组件一个key不要忘记了
+var numbers = [
+    {text:'dada',id:1},
+    {text:'sasa',id:2},
+    {text:'zaza',id:3},
+];
 function Li(props) {
-    return <li>{props.data.text}</li>
+    return <li> {props.data.text}</li> 
 }
 function List2(props) {
     const numbers = props.numbers;
-    const listItems = numbers.map((item,inde) =>
-        <Li data={item} key={item.id} />
+    const listItems = numbers.map((item,inde) => 
+        <Li data={item} key={item.id} /> 
     )
     return (
-        <ul>{listItems}</ul>
+        <ul> {listItems}</ul> 
     )
 }
-ReactDOM.render(<List2 numbers={numbers} />,document.getElementById('root2'))
+ReactDOM.render(<List2 numbers={numbers} /> ,document.getElementById('root2'))
 ```
