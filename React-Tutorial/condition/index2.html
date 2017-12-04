@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>条件渲染内联语句</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        //  使用jsx的内联条件语句
+        function MailBox(props) {
+            const unReadMessage = props.unReadMessage;
+            return (
+                <div>
+                    Hello!
+                    {unReadMessage.length>0&&
+                        <h2>
+                            You have {unReadMessage.length} unread message.
+                        </h2>
+                    }
+                </div>
+            )
+        }
+        const unReadMessage = ['msg1','msg2','msg3'];
+        ReactDOM.render(<MailBox unReadMessage={unReadMessage} />,document.getElementById('root'));
+    </script>
+</body>
+</html>

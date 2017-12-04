@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>防止组件渲染</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+    <style>
+        .warning {
+            height: 30px;
+            background: red;
+            color: #fff;
+            text-align: center;
+            line-height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // 有的时候不想渲染一个组件，那么我们就返回null
+        function Warning(props) {
+            if (!props.warning) {
+                return null;
+            }else {
+                return (
+                    <div className="warning">
+                        Warning!
+                    </div>
+                )
+            }
+        }
+        class Toggle extends React.Component{
+            constructor(props) {
+                super(props);
+                this.state = {
+                    warnFlag:false
+                }
+                this.handleClick = this.handleClick.bind(this);
+            }
+            handleClick(e) {
+                this.setState((preState) => ({
+                    warnFlag:!preState.warnFlag
+                }))
+            }
+            render() {
+                const warning = this.state.warnFlag;
+                return (
+                    <div>
+                        <Warning warning={warning} />
+                        <button onClick={this.handleClick}>{warning?'hide':'show'}</button>
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(<Toggle />,document.getElementById('root'))
+    </script>
+</body>
+</html>

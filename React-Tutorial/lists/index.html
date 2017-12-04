@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>列表渲染</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="target"></div>
+    <div id="root2"></div>
+    <script type="text/babel">
+        //直接展示最常用的列表渲染的方法
+        var numbers = [
+            {text:'dada',id:1},
+            {text:'sasa',id:2},
+            {text:'zaza',id:3},
+        ] 
+        // 使用map方式来进行列表渲染
+        function List(props) {
+         const listItems = props.numbers.map((item,index) =>
+                <li key={item.id}>{item.text}</li>
+            );
+            return (
+                <ul>{listItems}</ul>
+            )
+        }
+        ReactDOM.render(<List numbers={numbers} />,document.getElementById('root'))
+        // 上述例子还可以这么玩，直接用{}将map语法包裹，混入到return 语句中
+        function List1(props) {
+            const numbers = props.numbers;
+            return(
+                <ul>
+                {
+                    numbers.map((item,index) =>
+                        <li key={item.id}>{item.text}</li>    
+                    )
+                }
+                </ul>
+            )
+        }
+        ReactDOM.render(<List1 numbers={numbers} />,document.getElementById('target'))
+
+        // 如果是想遍历一个组件，那么你需要给组件一个key不要忘记了
+        function Li(props) {
+            return <li>{props.data.text}</li>
+        }
+        function List2(props) {
+            const numbers = props.numbers;
+            const listItems = numbers.map((item,inde) =>
+                <Li data={item} key={item.id} />
+            )
+            return (
+                <ul>{listItems}</ul>
+            )
+        }
+        ReactDOM.render(<List2 numbers={numbers} />,document.getElementById('root2'))
+    </script>
+</body>
+</html>

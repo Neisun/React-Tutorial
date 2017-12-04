@@ -452,3 +452,254 @@ class MyButton extends React.Component{
 }
 ReactDOM.render(<MyButton />,document.getElementById('root'))
 ```
+### 条件渲染部分
+
+也就是根据条件进行判断，然后动态的选择性的渲染我们的组件。
+
+比如我们有两个组件
+
+```js
+// UserGreeting组件
+function UserGreeting(props) {
+    return <h1>欢迎回来！</h1>
+}
+// GuestGreeting组件
+function GuestGreeting(props) {
+    return <h1>请先登录！</h1>
+}
+```
+都是欢迎用户的组件，但是需要判断用户是否登录，若登录了，那么渲染UserGreeting组件，反之，渲染GuestGreeting组件；
+
+那么，我们需要另一个组件根据props状态进行判断，到底渲染哪个组件
+
+```js
+function Greeting(props) {
+    let isLogin = props.isLogin;
+    if (isLogin) {
+        return <UserGreeting />;
+    }else {
+        return <GuestGreeting />;
+    }
+}
+ReactDOM.render(<Greeting isLogin={true} />,document.getElementById('root));
+// ReactDOM.render(<Greeting isLogin={false} />,document.getElementById('root));
+```
+但是这不符合规矩啊，我们想通过一个按钮来控制。当显示UerGreeting组件时候，出现按钮可以让他退出登录。让出现GuestGreeting组件时候，出现按钮提示他登录。
+
+那么，我们需要创建两个按钮组件，分别用来处理登录和退出功能；
+
+```js
+function LoginButton(props) {
+    return (
+        <button onClick={props.onClick}>登录</button>
+    )
+}
+function LogoutButton(props) {
+    return (
+        <button onClick={props.onClick}>退出</button>
+    )
+}
+```
+在创建一个有状态的组件，用来根据state来渲染LoginButton或者LogoutButton组件，同时也会渲染Greeting组件。
+
+>元素变量
+
+我们用变量来储存元素。根据条件来渲染变量同时就是渲染一个元素。
+
+```js
+// 需要一个有状态的组件，渲染LoginButton或者LogoutButton，同时渲染Greeting组件
+class LoginControl extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLogin:false
+        }
+        this.handleLogin = this.handleLogin.bind(this)
+        this.handleLogout = this.handleLogout.bind(this)
+    }
+    handleLogin() {
+        this.setState({
+            isLogin:true
+        })
+    }
+    handleLogout() {
+        this.setState({
+            isLogin:false
+        })
+    }
+    render() {
+        let isLogin = this.state.isLogin;
+        // 最让我惊讶的地方，用变量替换组件，实现动态渲染，我的天呐
+        let button = null;
+        if (isLogin) {
+            button = <LogoutButton onClick={this.handleLogout} />
+        }else {
+            button = <LoginButton onClick={this.handleLogin} />
+        }
+        return (
+            <div>
+                <Greeting isLogin={isLogin} />
+            // 然后在这里，把button这个变量渲染出来
+                {button}
+            </div>
+        )
+    }
+}
+```
+>条件渲染内联语句
+
+这也是让我比较惊讶的，竟然可以这么使用。在某些情况下，我们不想使用if进行判断，可使用内联语句
+
+```js
+//  使用jsx的内联条件语句
+function MailBox(props) {
+    const unReadMessage = props.unReadMessage;
+    return (
+        <div>
+            Hello!
+            {unReadMessage.length>0&&
+                <h2>
+                    You have {unReadMessage.length} unread message.
+                </h2>
+            }
+        </div>
+    )
+}
+const unReadMessage = ['msg1','msg2','msg3'];
+ReactDOM.render(<MailBox unReadMessage={unReadMessage} />,document.getElementById('root'));
+```
+>三元表达式也是可以的
+
+```js
+class Login extends React.Component{
+    constructor(props) {
+        super(props)
+        this.state = {
+            isLogin:false
+        }
+    }
+    render() {
+        const isLogin = this.state.isLogin;
+        return (
+            <div>
+                <b>{isLogin?'user':'not'} login!</b>
+            </div>
+        )
+    }
+}
+ReactDOM.render(<Login />,document.getElementById('root'))
+```
+>防止组件渲染
+
+有的时候，我们不想渲染一个组件，那么我们就返回null
+
+```js
+// 有的时候不想渲染一个组件，那么我们就返回null
+function Warning(props) {
+    if (!props.warning) {
+        return null;
+    }else {
+        return (
+            <div className="warning">
+                Warning!
+            </div>
+        )
+    }
+}
+class Toggle extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            warnFlag:false
+        }
+        this.handleClick = this.handleClick.bind(this);
+    }
+    handleClick(e) {
+        this.setState((preState) => ({
+            warnFlag:!preState.warnFlag
+        }))
+    }
+    render() {
+        const warning = this.state.warnFlag;
+        return (
+            <div>
+                <Warning warning={warning} />
+                <button onClick={this.handleClick}>{warning?'hide':'show'}</button>
+            </div>
+        )
+    }
+}
+ReactDOM.render(<Toggle />,document.getElementById('root'))
+```
+### 列表渲染
+
+列表渲染利用的是map这个函数
+
+```js
+var numbers = [1,2,3,4,5];
+var double = numbers.map((item) => item*2);
+// 结果
+// [2,4,6,8,10]
+```
+>最通用的方式
+
+```js
+//直接展示最常用的列表渲染的方法
+var numbers = [
+    {text:'dada',id:1},
+    {text:'sasa',id:2},
+    {text:'zaza',id:3},
+] 
+// 使用map方式来进行列表渲染
+function List(props) {
+    const listItems = props.numbers.map((item,index) =>
+        <li key={item.id}>{item.text}</li>
+    );
+    return (
+        <ul>{listItems}</ul>
+    )
+}
+ReactDOM.render(<List numbers={numbers} />,document.getElementById('root'))
+```
+如果你不想利用一个变量去存listItems，也可以直接在ul中渲染，使用jsx语法，比如这样
+
+> jsx嵌入map
+
+```js
+// 上述例子还可以这么玩，直接用{}将map语法包裹，混入到return 语句中
+function List1(props) {
+    const numbers = props.numbers;
+    return(
+        <ul>
+        {
+            numbers.map((item,index) =>
+                <li key={item.id}>{item.text}</li>    
+            )
+        }
+        </ul>
+    )
+}
+ReactDOM.render(<List1 numbers={numbers} />,document.getElementById('target'))
+```
+>不要忘了key
+
+key是用来表示每一个渲染的元素或者组件的唯一标识，最好的方式是数据中有列表的id，实在不行，就用数组的下标标识，所以不能缺少。
+
+我们看一个遍历组件的例子
+
+```js
+// 如果是想遍历一个组件，那么你需要给组件一个key不要忘记了
+function Li(props) {
+    return <li>{props.data.text}</li>
+}
+function List2(props) {
+    const numbers = props.numbers;
+    const listItems = numbers.map((item,inde) =>
+        <Li data={item} key={item.id} />
+    )
+    return (
+        <ul>{listItems}</ul>
+    )
+}
+ReactDOM.render(<List2 numbers={numbers} />,document.getElementById('root2'))
+```
