@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>带筛选功能table</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+    .ProductTableContainer{
+        padding: 10px;
+        margin: 0 auto;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+            // table的数据
+            const productList = [
+                {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
+                {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
+                {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
+                {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
+                {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
+                {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
+            ];
+            // ProductTableContainer组件
+            class ProductTableContainer extends React.Component {
+                constructor(props) {
+                    super(props);
+                    // 创建state，filterText，isStocked
+                    this.state = {
+                        filterText:'',
+                        isStocked:false
+                    }
+                    this.handleFilterText = this.handleFilterText.bind(this);
+                    this.handleIsStocked = this.handleIsStocked.bind(this);
+                }
+                handleFilterText(value) {
+                    this.setState({
+                        filterText:value
+                    })
+                }
+                handleIsStocked(value) {
+                    this.setState({
+                        isStocked:value
+                    })
+                }
+                render() {
+                    return (
+                        <div className="ProductTableContainer col-md-4">
+                            <SearchBar 
+                                filterText={this.state.handleIsStocked} 
+                                isStocked={this.state.isStocked} 
+                                changeFilterText={this.handleFilterText} 
+                                changeStock={this.handleIsStocked} 
+                            />
+                            <ProductTable 
+                                products={this.props.products} 
+                                filterText={this.state.filterText} 
+                                isStocked={this.state.isStocked} 
+                            />
+                        </div>
+                    )
+                }
+            }
+            // SearchBar
+            class SearchBar extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.handleChangeText = this.handleChangeText.bind(this);
+                    this.handleChangeCheckBox = this.handleChangeCheckBox.bind(this);
+                }
+                handleChangeText(e) {
+                    this.props.changeFilterText(e.target.value);
+                }
+                handleChangeCheckBox(e) {
+                    this.props.changeStock(e.target.checked);
+                }
+                render() {
+                    return (
+                        <form>
+                            <div className="form-group">
+                                <input 
+                                    type="text" 
+                                    value={this.props.filterText} 
+                                    className="form-control" 
+                                    placeholder="search..." 
+                                    onChange={this.handleChangeText}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <input type="checkbox" checked={this.props.isStocked} onChange={this.handleChangeCheckBox} />Only show products in stock
+                            </div>
+                        </form>
+                    )
+                }
+            }
+            // ProductTable
+            class ProductTable extends React.Component {
+                constructor(props) {
+                    super(props)
+                }
+                render() {
+                    var rows = [];
+                    var lastCategory = null;
+                    this.props.products.forEach((product) => {
+                        if (product.name.indexOf(this.props.filterText) === -1 || (!product.stocked && this.props.isStocked)) {
+                            return ;
+                        }
+                        if (product.category!== lastCategory) {
+                            rows.push(<ProductCategory category={product.category} key={product.category} />)
+                        }
+                        rows.push(<ProductRow product={product} key={product.name} />);
+                        lastCategory = product.category;
+                    })
+                    return (
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rows}
+                            </tbody>
+                        </table>
+                    )
+                }
+            }
+            // ProductCategory
+            class ProductCategory extends React.Component {
+                constructor(props) {
+                    super(props);
+                }
+                render() {
+                    return (
+                        <tr>
+                            <th colSpan="2">{this.props.category}</th>
+                        </tr>
+                    )
+                }
+            }
+            // ProductRow
+            class ProductRow extends React.Component {
+                constructor(props) {
+                    super(props);
+                }
+                render() {
+                    var name = null;
+                    var stocked = this.props.product.stocked;
+                    var procutName = this.props.product.name;
+                    name = stocked ? procutName : <span style={{color:'red'}}>{procutName}</span>;
+                    return (
+                        <tr>
+                            <td>{name}</td>
+                            <td>{this.props.product.price}</td>
+                        </tr>
+                    )
+                }
+            }
+            ReactDOM.render(<ProductTableContainer products={productList}  />,document.getElementById('root'))
+    </script>
+</body>
+
+</html>

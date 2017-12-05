@@ -1196,3 +1196,9 @@ function tryConvert(temperatrue,convert) {
 ReactDOM.render(<Calculator />,document.getElementById('root'))
 ```
 这是一个循序渐进的过程，并不是一蹴而就的结果。所以，需要我们从最简单的方式一点点优化到最终的代码形式。重要的是这个思维过程。把复杂的东西一点点剖析成简单的，然后组合在一起。
+
+基础的教程接近尾声，回顾一下这个过程。发现，主要是熟悉React的语法，使用方法。而且React的语法与上手确实不是很困难。最困难的其实是抽象的思维，抽离出组件，实现封装。
+
+### 一个demo来结尾
+
+实现筛选功能的table

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+    <title>搜索tabledemo</title>
+    <style>
+    .ProductTableContainer{
+        padding: 10px;
+    }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const productList = [
+                {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
+                {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
+                {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
+                {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
+                {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
+                {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
+            ];
+            
+            // 根据上述数据和UI图，将整体划分为5各组件
+            // 容器组件
+            class ProductTableContainer extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                        filterTxt:'',
+                        isStocked:false
+                    }
+                    this.handleChangeTxt = this.handleChangeTxt.bind(this);
+                    this.handleChangeStocked = this.handleChangeStocked.bind(this);
+                }
+                handleChangeTxt(value) {
+                    this.setState({
+                        filterTxt:value
+                    })
+                }
+                handleChangeStocked(value) {
+                    this.setState({
+                        isStocked:value
+                    })
+                }
+                render(){
+                     return (
+                        <div className="ProductTableContainer">
+                            <SearchBar changeTxt={this.handleChangeTxt} changeStocked={this.handleChangeStocked} checked={this.state.isStocked} filterTxt={this.state.filterTxt} />
+                            <ProductTable productList={this.props.productList} filterTxt={this.state.filterTxt} isStocked={this.state.isStocked} />
+                        </div>
+                    )
+                } 
+            }
+            class SearchBar extends React.Component{
+                constructor(props) {
+                    super(props);
+                    this.handleChangeTxt = this.handleChangeTxt.bind(this);
+                    this.handleChangeStocked = this.handleChangeStocked.bind(this);
+                }
+                handleChangeTxt(e) {
+                    this.props.changeTxt(e.target.value)
+                }
+                handleChangeStocked(e) {
+                    this.props.changeStocked(e.target.checked)
+                }
+                render() {
+                    return (
+                        <div className="SearchBar">
+                            <div>
+                                <input type="text" placeholder="Search..." onChange={this.handleChangeTxt} value={this.props.filterTxt} />
+                            </div>
+                            <div>
+                                <input type="checkbox" checked={this.props.checked} onChange={this.handleChangeStocked} /> Only show product in stock
+                            </div>
+                        </div>
+                    )
+                }
+            }
+            class ProductTable extends React.Component{
+                constructor(props) {
+                    super(props);
+                }
+                render() {
+                    var arr = [];
+                    var lastCategory = null;
+                    var productList = this.props.productList;
+                    productList.forEach((product) => {
+                        if (product.name.indexOf(this.props.filterTxt) === -1 || (!product.stocked && this.props.isStocked)) {
+                            return;
+                        }
+                        if (product.category!==lastCategory) {
+                            arr.push(<ProductCategoryRow category={product.category} key={product.category} />)
+                        }
+                        arr.push(<ProductRow product={product} key={product.name} />);
+                        lastCategory = product.category;
+                    })
+                    return (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>{arr}</tbody>
+                        </table>
+                    )
+                }
+            }
+            class ProductCategoryRow extends React.Component {
+                constructor(props) {
+                    super(props);
+                }
+                render() {
+                    return (
+                        <tr>
+                            <th colSpan="2">{this.props.category}</th>
+                        </tr>
+                    )
+                }
+            }
+            class ProductRow extends React.Component {
+                constructor(props) {
+                    super(props);
+                }
+                render () {
+                    var name = null;
+                    if (this.props.product.stocked) {
+                        name = this.props.product.name
+                    } else {
+                        name = <span style={{color:'red'}}>{this.props.product.name}</span>                     
+                    }
+                    return (
+                        <tr>
+                            <td>{name}</td>
+                            <td>{this.props.product.price}</td>
+                        </tr>
+                    )
+                }
+            }
+            ReactDOM.render(<ProductTableContainer productList={productList} />,document.getElementById('root'))
+    </script>
+</body>
+</html>
