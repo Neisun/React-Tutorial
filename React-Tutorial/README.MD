@@ -1201,4 +1201,286 @@ ReactDOM.render(<Calculator />,document.getElementById('root'))
 
 ### 一个demo来结尾
 
-实现筛选功能的table
+实现筛选功能的table，可以按name搜索也可以按checkbox勾选与否进行筛选。
+
+首先，得看一张图，这个图类似于UI图。我们通过图分析出，组件的结构。然后来定义组件。
+
+![需求图]('./assets/thinking-in-react-mock.png')
+
+![分析组件]('./assets/thinking-in-react-components.png')
+
+总共分成了五个组件，组件的名称倒是无所谓，你可以自己定义，最好是语义化，方便你我一下子就知道组件的用处。
+
+看一下数据结构
+
+```js
+const productList = [
+    {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
+    {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
+    {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
+    {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
+    {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
+    {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
+];
+```
+
+首先，我们先定义五个组件。我们先根据数据，把各部分组件写好，然后渲染出静态的html。
+
+```js
+// ProductTableContainer组件
+class ProductTableContainer extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="ProductTableContainer col-md-4">
+                <SearchBar />
+                <ProductTable />
+            </div>
+        )
+    }
+}
+// SearchBar
+class SearchBar extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <form>
+                <div className="form-group">
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        placeholder="search..." 
+                    />
+                </div>
+                <div className="form-group">
+                    <input type="checkbox" />Only show products in stock
+                </div>
+            </form>
+        )
+    }
+}
+// ProductTable
+class ProductTable extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    render() {
+        var rows = [];
+        var lastCategory = null;
+        this.props.products.forEach((product) => {
+            if (product.category!== lastCategory) {
+                rows.push(<ProductCategory category={product.category} key={product.category} />)
+            }
+            rows.push(<ProductRow product={product} key={product.name} />);
+            lastCategory = product.category;
+        })
+        return (
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
+        )
+    }
+}
+// ProductCategory
+class ProductCategory extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <tr>
+                <th colSpan="2">{this.props.category}</th>
+            </tr>
+        )
+    }
+}
+// ProductRow
+class ProductRow extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        var name = null;
+        var stocked = this.props.product.stocked;
+        var procutName = this.props.product.name;
+        name = stocked ? procutName : <span style={{color:'red'}}>{procutName}</span>;
+        return (
+            <tr>
+                <td>{name}</td>
+                <td>{this.props.product.price}</td>
+            </tr>
+        )
+    }
+}
+ReactDOM.render(<ProductTableContainer products={productList}  />,document.getElementById('root'));
+```
+接下来，就是添加事件。我们的SearchBar组件的输入框内容需要传递给table组件，而且checkbox的筛选状态也需要传递给table组件。怎么才能传递呢？这两个组件都是独立的，要想让二者关联。那么需要给他们共同的父组件，有个状态然后把状态值当做属性传递给这两组件，并且，SearchBar组件可以通过过事件把自己的值传递给父组件。
+
+所以，我们需要以下这几点。
+- 在最外层组件中设置，state值。同时设置方法，用来接收SearchBar组件传递过来的值，然后setState。
+- SearchBar需要设置事件，传递值。
+- ProductTable组件利用值，来过滤数据
+
+综上所述，代码修改一下。直接上完整的代码了。（为了美观，你需要引入bootstrap）
+
+```js
+// table的数据
+const productList = [
+    {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
+    {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
+    {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
+    {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
+    {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
+    {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
+];
+// ProductTableContainer组件
+class ProductTableContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        // 创建state，filterText，isStocked
+        this.state = {
+            filterText:'',
+            isStocked:false
+        }
+        this.handleFilterText = this.handleFilterText.bind(this);
+        this.handleIsStocked = this.handleIsStocked.bind(this);
+    }
+    handleFilterText(value) {
+        this.setState({
+            filterText:value
+        })
+    }
+    handleIsStocked(value) {
+        this.setState({
+            isStocked:value
+        })
+    }
+    render() {
+        return (
+            <div className="ProductTableContainer col-md-4">
+                <SearchBar 
+                    filterText={this.state.handleIsStocked} 
+                    isStocked={this.state.isStocked} 
+                    changeFilterText={this.handleFilterText} 
+                    changeStock={this.handleIsStocked} 
+                />
+                <ProductTable 
+                    products={this.props.products} 
+                    filterText={this.state.filterText} 
+                    isStocked={this.state.isStocked} 
+                />
+            </div>
+        )
+    }
+}
+// SearchBar
+class SearchBar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChangeText = this.handleChangeText.bind(this);
+        this.handleChangeCheckBox = this.handleChangeCheckBox.bind(this);
+    }
+    handleChangeText(e) {
+        this.props.changeFilterText(e.target.value);
+    }
+    handleChangeCheckBox(e) {
+        this.props.changeStock(e.target.checked);
+    }
+    render() {
+        return (
+            <form>
+                <div className="form-group">
+                    <input 
+                        type="text" 
+                        value={this.props.filterText} 
+                        className="form-control" 
+                        placeholder="search..." 
+                        onChange={this.handleChangeText}
+                    />
+                </div>
+                <div className="form-group">
+                    <input type="checkbox" checked={this.props.isStocked} onChange={this.handleChangeCheckBox} />Only show products in stock
+                </div>
+            </form>
+        )
+    }
+}
+// ProductTable
+class ProductTable extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    render() {
+        var rows = [];
+        var lastCategory = null;
+        this.props.products.forEach((product) => {
+            // 这是筛选功能的核心，首先验证filterText文件，根据checkbox来筛选，当isStocked是true，同时product.stocked为true时候，我们展示数据，其他的时候，数据不展示
+            if (product.name.indexOf(this.props.filterText) === -1 || (!product.stocked && this.props.isStocked)) {
+                return ; // 结束本次循环，跳出本次循环，forEach，在for中是continue
+            }
+            if (product.category!== lastCategory) {
+                rows.push(<ProductCategory category={product.category} key={product.category} />)
+            }
+            rows.push(<ProductRow product={product} key={product.name} />);
+            lastCategory = product.category;
+        })
+        return (
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
+        )
+    }
+}
+// ProductCategory
+class ProductCategory extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <tr>
+                <th colSpan="2">{this.props.category}</th>
+            </tr>
+        )
+    }
+}
+// ProductRow
+class ProductRow extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        var name = null;
+        var stocked = this.props.product.stocked;
+        var procutName = this.props.product.name;
+        name = stocked ? procutName : <span style={{color:'red'}}>{procutName}</span>;
+        return (
+            <tr>
+                <td>{name}</td>
+                <td>{this.props.product.price}</td>
+            </tr>
+        )
+    }
+}
+ReactDOM.render(<ProductTableContainer products={productList}  />,document.getElementById('root'));
+```

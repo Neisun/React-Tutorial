@@ -112,8 +112,9 @@
                     var rows = [];
                     var lastCategory = null;
                     this.props.products.forEach((product) => {
+                        // 这是筛选功能的核心，首先验证filterText文件，根据checkbox来筛选，当isStocked是true，同时product.stocked为true时候，我们展示数据，其他的时候，数据不展示
                         if (product.name.indexOf(this.props.filterText) === -1 || (!product.stocked && this.props.isStocked)) {
-                            return ;
+                            return ; // 结束本次循环，跳出本次循环，forEach，在for中是continue
                         }
                         if (product.category!== lastCategory) {
                             rows.push(<ProductCategory category={product.category} key={product.category} />)
@@ -167,7 +168,7 @@
                     )
                 }
             }
-            ReactDOM.render(<ProductTableContainer products={productList}  />,document.getElementById('root'))
+            ReactDOM.render(<ProductTableContainer products={productList}  />,document.getElementById('root'));
     </script>
 </body>
 
