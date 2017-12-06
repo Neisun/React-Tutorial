@@ -1484,3 +1484,4 @@ class ProductRow extends React.Component {
 }
 ReactDOM.render(<ProductTableContainer products={productList}  />,document.getElementById('root'));
 ```
+至此，React基础部分就已经了解很多了，但是React的学习过程是非常漫长的。我们还没有和自动化构建工具使用以及我们做的demo还远远不够，所以下一步，一步步加深难度。上手一些小demo。以后会陆续介绍一下demo的写法，主要是在开发的思路。我觉得思路最重要。
