@@ -38,7 +38,16 @@
         class List extends React.Component{
             constructor(props){
                 super(props);
+                // this.remove = this.remove.bind(this)
+                // this.test = this.test.bind(this)
             }
+            remove(index){
+                this.props.removeItem(index)
+            }
+            test(){
+                console.log('1111')
+            }
+            // 传递参数时候，需要用箭头函数形式比较好，onClick={() => this.remove(index)}
             render(){
                 return (
                     <ul className="list-group">
@@ -47,7 +56,7 @@
                                 return (
                                     <li key={item.id} className="list-group-item clearfix">
                                         {item.content}
-                                        <button className="btn btn-default  btn-xs">X</button>
+                                        <button key={item.id} className="btn btn-default  btn-xs" onClick={() => this.remove(index)}>X</button>
                                     </li>
                                 )
                             })
@@ -56,48 +65,106 @@
                 )
             }
         }
-        // 然后我们在创建输入组
-        class Add extends React.Component{
+        // 然后我们在创建输入组，如果说，我们添加一个删除的功能，这样子，这个组件就不对了，还得把add这个组件单独提出来
+        class AddCom extends React.Component{
             constructor(props){
                 super(props);
-                this.state = {
-                    content:'',
-                    items:[]
-                }
+                // this.state = {
+                //     content:'',
+                //     items:[]
+                // }
                 this.change = this.change.bind(this);
                 this.add = this.add.bind(this);
+                this.state = {
+                    content:''
+                }
             }
             change(e){
+                // this.setState({
+                //     content:e.target.value
+                // })
+                // this.props.onChange(e.target.value)
                 this.setState({
                     content:e.target.value
                 })
             }
             add(e){
+                // let item = {
+                //     content:this.state.content,
+                //     id:Date.now()
+                // }
+                // if (this.state.content=='') {
+                //     document.getElementById('inp').focus()
+                //     return alert('输入数据不能为空！')
+                // }
+                // this.setState((preState) => ({
+                //     content:'',
+                //     items:preState.items.concat(item)
+                // }))
                 let item = {
                     content:this.state.content,
                     id:Date.now()
                 }
-                if (this.state.content=='') {
+                this.setState({
+                    content:''
+                })
+                if (this.state.content=="") {
                     document.getElementById('inp').focus()
-                    return alert('输入数据不能为空！')
+                    return alert('数据不能为空！');
                 }
-                this.setState((preState) => ({
-                    content:'',
-                    items:preState.items.concat(item)
-                }))
+                this.props.addNewContent(item);
             }
             render(){
                 return (
                     <div>
-                        <List list={this.state.items} />
                         <input id="inp" type="text" onChange={this.change} value={this.state.content} />
                         <button className="btn btn-default" onClick={this.add}>Add</button>
                     </div>
                 )
             }
         }
-
-        ReactDOM.render(<Add />,document.getElementById('root'));
+        class TodoList extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = {
+                    items:[]
+                }
+                this.addNew = this.addNew.bind(this);
+                this.removeItem = this.removeItem.bind(this)
+            }
+            addNew(item){
+                this.setState((pre) => ({
+                    items:pre.items.concat(item)
+                }))
+            }
+            removeItem(index){
+                console.log(index);
+                // var items = this.state.items.splice(index,1);
+                // this.state.items.splice(index,1);
+                // this.setState((pre) => ({
+                //     items:pre.items.splice(index,1)
+                // }))
+                // this.setState({
+                //     items:items
+                // })
+                // splice返回的要么是被删除的项，要么是[],怎么才能动态的触发新state呢？
+                // 
+                let items = this.state.items;
+                items.splice(index,1);
+                this.setState((pre) => ({
+                     items:items
+                }))
+            }
+            render(){
+                return (
+                    <div>
+                        <List list={this.state.items} removeItem={this.removeItem} />
+                        <AddCom addNewContent={this.addNew} />
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(<TodoList />,document.getElementById('root'));
     </script>
 </body>
 </html>
