@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+    <title>todo-list</title>
+    <link rel="stylesheet" href="../build/bootstrap.css">
+    <style>
+        #root {
+            width: 700px;
+            margin: 20px auto;
+        }
+        .list-group-item .btn{
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        class List extends React.Component {
+            constructor(props) {
+                super(props)
+            }
+            componentWDidMount() {
+                console.log(this.props.list)
+            }
+            render() {
+                return(
+                    <ul className="list-group">
+                        {this.props.list.map((item,index) => {
+                                return (
+                                    <li className="list-group-item" key={index}>
+                                        {item.content}
+                                        <button type="button" className="btn btn-default btn-xs">x</button>
+                                    </li>
+                                )
+                            })}
+                    </ul>
+                )
+            }
+        }
+        class AddContent extends React.Component {
+            constructor(props) {
+                super(props);
+                this.handleChange = this.handleChange.bind(this);
+                this.add = this.add.bind(this);
+                this.state = {
+                    content:'',
+                    list:[]
+                }
+            }
+            handleChange(e) {
+                this.setState({
+                    content:e.target.value
+                })
+            }
+            add() {
+                var item = {
+                    content:this.state.content,
+                    id: Date.now()
+                }
+                this.setState((preState) => ({
+                    // 为毛必须concat？直接push不行？
+                    list:preState.list.concat(item),
+                    content:''
+                }))
+                // console.log(this.state.list)
+            }
+            render() {
+                return (
+                    <div>
+                        <List list={this.state.list} />
+                        <div>
+                            <input type="text" onChange={this.handleChange} value={this.state.content} />
+                            <button type="button" className="btn btn-default" onClick={this.add}>Add</button>
+                        </div>
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(<AddContent />,document.getElementById('root'));
+    </script>
+</body>
+</html>

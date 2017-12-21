@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>todo-list</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.min.js"></script>
+    <script src="../build/browser.min.js"></script>
+    <link rel="stylesheet" href="../build/bootstrap.css">
+    <style>
+    #root {
+        width: 50%;
+        margin: 20px auto;
+    }
+    .list-group-item>.btn {
+        float: right;
+    }
+    .clearfix::after{
+        content: "";
+        display: block;
+        height: 0;
+        clear: both;
+    }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        let data = [
+            {content:'111'},
+            {content:'222'},
+            {content:'333'},
+            {content:'444'},
+        ]
+        // 我们先创建一个列表
+        class List extends React.Component{
+            constructor(props){
+                super(props);
+            }
+            render(){
+                return (
+                    <ul className="list-group">
+                        {
+                            this.props.list.map((item,index) => {
+                                return (
+                                    <li key={item.id} className="list-group-item clearfix">
+                                        {item.content}
+                                        <button className="btn btn-default  btn-xs">X</button>
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
+                )
+            }
+        }
+        // 然后我们在创建输入组
+        class Add extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = {
+                    content:'',
+                    items:[]
+                }
+                this.change = this.change.bind(this);
+                this.add = this.add.bind(this);
+            }
+            change(e){
+                this.setState({
+                    content:e.target.value
+                })
+            }
+            add(e){
+                let item = {
+                    content:this.state.content,
+                    id:Date.now()
+                }
+                if (this.state.content=='') {
+                    document.getElementById('inp').focus()
+                    return alert('输入数据不能为空！')
+                }
+                this.setState((preState) => ({
+                    content:'',
+                    items:preState.items.concat(item)
+                }))
+            }
+            render(){
+                return (
+                    <div>
+                        <List list={this.state.items} />
+                        <input id="inp" type="text" onChange={this.change} value={this.state.content} />
+                        <button className="btn btn-default" onClick={this.add}>Add</button>
+                    </div>
+                )
+            }
+        }
+
+        ReactDOM.render(<Add />,document.getElementById('root'));
+    </script>
+</body>
+</html>
