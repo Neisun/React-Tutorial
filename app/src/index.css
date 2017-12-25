@@ -1,0 +1,39 @@
+/* 项目入口css文件，放一些通用配置 */
+body{
+    font: 14px "Century Gothic", Futura, sans-serif;
+}
+.square {
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    background: #fff;
+    float: left;
+    margin-right: -1px;
+    margin-top: -1px;
+    font-weight: bold;
+    font-size: 18px;
+}
+.square:focus{
+    outline: none;
+}
+.clearfix::after{
+    content: "";
+    display: block;
+    clear: both;
+    height: 0;
+}
+.msg{
+    margin: 0;
+    margin-bottom: 5px;
+}
+.game {
+    display: flex;
+    justify-content: flex-start;
+}
+.result {
+    margin-left: 10px;
+}

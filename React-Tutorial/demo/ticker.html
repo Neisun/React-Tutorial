@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>简单计时器demo</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+    <style>
+    .wrapper {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center
+    }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+    // 一个有自己状态的组件
+        class Ticker extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = {
+                    counter:0
+                }
+            }
+            tick(){
+                this.setState(pre => ({
+                    counter:pre.counter+1
+                }))
+            }
+            componentDidMount(){
+                this.timer = setInterval(() => {
+                    this.tick()
+                },1000)
+            }
+            componentWillUnmount(){
+                clearInterval(this.timer);
+            }
+            render() {
+                return (
+                    <div className="wrapper">
+                        计时器：{this.state.counter}
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(<Ticker />,document.getElementById('root'))
+    </script>
+</body>
+</html>
