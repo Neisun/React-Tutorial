@@ -1,0 +1,66 @@
+.minePage {
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+    :global {
+        .am-navbar-light {
+            /* background-color:#38383c; */
+            background: #38383c;
+            color: #fff;
+            .am-navbar-title {
+                color: #fff;
+            }
+        }
+    }
+    .main {
+        .cellLayout(@height){
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: @height;
+            border-bottom: 1px solid #ccc;
+            font-size: 0.4rem;
+            background: #fff;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .login {
+            .cellLayout(3rem);
+            background: url('../../assets/me_bg.jpg') no-repeat;
+            background-size: 100% 100%;
+            .left {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                .user {
+                    width: 1.83rem;
+                    height: 1.83rem;
+                }
+                span {
+                    margin-left: 5px;
+                    color: #fff;
+                    // font-size: 0.5rem;
+                    // font-weight: bold;
+                }
+            }
+        }
+        .cell {
+            .cellLayout(1.78rem);
+            .left {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                .icon {
+                    width: 20px;
+                    height: 20px;
+                }
+                span {
+                    margin-left: 5px;
+                }
+            }
+            .right {
+
+            }
+        }
+    }
+}

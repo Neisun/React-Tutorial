@@ -1,0 +1,108 @@
+.serviceAddressPage {
+    height: 100%;
+    width: 100%;
+    // overflow: hidden;
+    position: relative;
+    // overflow-y: scroll;
+    :global {
+        .am-navbar-light {
+            /* background-color:#38383c; */
+            background: #38383c;
+            color: #fff;
+            .am-navbar-title {
+                color: #fff;
+            }
+        }
+    }
+    .list {
+        height: 80%;
+        overflow-y: scroll;
+        .cell {
+            padding: 10px;
+            background: #fff;
+            font-size: 0.5rem;
+            margin-bottom: 10px;
+            .userInfo {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid #ccc;
+                :global {
+                    .am-list-item.am-input-item {
+                        padding-left: 0;
+                    }
+                    .am-list-item {
+                        &:last-child{
+                            .am-input-control{
+                                input {
+                                    text-align: right;
+                                    font-size: 0.35rem;
+                                }
+                            }
+                        }
+                        .am-input-control{
+                            input {
+                                font-size: 0.35rem;
+                            }
+                        }
+                    }
+                }
+            }
+            .address {
+                :global {
+                    .am-list-item.am-input-item {
+                        padding-left: 0;
+                    }
+                    .am-list-item {
+                        .am-input-control{
+                            input {
+                                font-size: 0.35rem;
+                            }
+                        }
+                    }
+                }
+            }
+            .action {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .left {
+                    font-size: 0.35rem;
+                    // img {
+                    //     width: 18px;
+                    //     height: 18px;
+                    //     vertical-align: middle;
+                    //     margin-right: 10px;
+                    // }
+                }
+                .right {
+                    font-size: 0.35rem;
+                    a {
+                        &:first-child{
+                            margin-right: 20px;
+                        }
+                        img {
+                            width: 18px;
+                            height: 18px;
+                            vertical-align: middle;
+                            margin-right: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .addBtn {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 10px;
+        :global {
+            .am-button {
+                background: #1cac1b;
+                color: #fff;
+            }
+        }
+    }
+}
